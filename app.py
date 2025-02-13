@@ -13,9 +13,9 @@ VALID_PASSWORD = st.secrets["APP_PASSWORD"]
 
 s3_client = boto3.client(
     's3',
-    AWS_ACCESS_KEY_ID = st.secrets["AWS_ACCESS_KEY_ID"]
-    AWS_SECRET_ACCESS_KEY = st.secrets["AWS_SECRET_ACCESS_KEY"]
-    AWS_SESSION_TOKEN = st.secrets.get("AWS_SESSION_TOKEN", None)  
+    AWS_ACCESS_KEY_ID = st.secrets["AWS_ACCESS_KEY_ID"],
+    AWS_SECRET_ACCESS_KEY = st.secrets["AWS_SECRET_ACCESS_KEY"],
+    AWS_SESSION_TOKEN = st.secrets.get("AWS_SESSION_TOKEN", None) , 
     AWS_REGION = st.secrets["AWS_REGION"]
 
 )
