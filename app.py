@@ -6,16 +6,20 @@ import pandas as pd
 
 # AWS S3 Configuration (Use environment variables for security)
 S3_BUCKET = "placement-trends-data2"
-S3_REGION = "us-east-1"
 S3_BUCKET_MARKER = "markers-for-batches2"
+
+VALID_USERNAME = st.secrets["APP_USERNAME"]
+VALID_PASSWORD = st.secrets["APP_PASSWORD"]
+
 s3_client = boto3.client(
     's3',
-    aws_access_key_id="aws_access_key_id",
-    aws_secret_access_key="aws_secret_access_key",
-    aws_session_token="aws_session_token",
-    region_name=S3_REGION
+    AWS_ACCESS_KEY_ID = st.secrets["AWS_ACCESS_KEY_ID"]
+    AWS_SECRET_ACCESS_KEY = st.secrets["AWS_SECRET_ACCESS_KEY"]
+    AWS_SESSION_TOKEN = st.secrets.get("AWS_SESSION_TOKEN", None)  
+    AWS_REGION = st.secrets["AWS_REGION"]
 
 )
+
 
 # Custom CSS to style the login page and make it bigger
 st.markdown("""
@@ -41,7 +45,7 @@ def login():
     st.markdown('<div class="login-title">🔒 Login</div>', unsafe_allow_html=True)
 
     users = {
-        "SMVITA1": "SMVITA@123"
+        VALID_USERNAME : VALID_PASSWORD
     }
     username = st.text_input("Username", max_chars=10)
     password = st.text_input("Password", type="password", max_chars=10)
