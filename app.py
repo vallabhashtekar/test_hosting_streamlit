@@ -1,4 +1,21 @@
+import streamlit as st
+import boto3
+import os
+from io import BytesIO
+import pandas as pd
 
+# AWS S3 Configuration (Use environment variables for security)
+S3_BUCKET = "placement-trends-data2"
+S3_REGION = "us-east-1"
+S3_BUCKET_MARKER = "markers-for-batches2"
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id="aws_access_key_id",
+    aws_secret_access_key="aws_secret_access_key",
+    aws_session_token="aws_session_token",
+    region_name=S3_REGION
+
+)
 
 # Custom CSS to style the login page and make it bigger
 st.markdown("""
