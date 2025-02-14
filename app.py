@@ -153,12 +153,18 @@ with col8:
 with col9:
     placement_dbda_sheet = st.text_input("Placement DBDA Sheet Name (Optional)")
 
+MONTH_ABBREVIATIONS = {
+    "March": "Mar",
+    "September": "Sep"
+}
 # Upload Button
 if st.button("🚀 Upload"):
     if not batch_month or not batch_year:
         st.error("🚨 Batch month and year are required!")
     else:
-        batch_name = f"{batch_month}_{batch_year}"
+        # Convert full month name to abbreviation
+        abbrev_month = MONTH_ABBREVIATIONS.get(batch_month, batch_month)
+        batch_name = f"{abbrev_month}_{batch_year}"
         uploaded_files = {}
 
         files_to_upload = {
