@@ -112,18 +112,58 @@ def upload_marker_file(batch_name):
     except Exception as e:
         st.error(f"Error uploading marker file: {str(e)}")
 
-# Sidebar: Display folder information
+# ... [Keep all previous imports and configurations unchanged] ...
+
+# Add this function under the Helper Functions section
+def filter_folders(folders, search_term):
+    """Filter folders based on search term (supports month name, abbreviation, year, or partial matches)"""
+    if not search_term:
+        return folders
+    
+    search_lower = search_term.strip().lower()
+    filtered = []
+    FULL_MONTH_NAMES = {v: k for k, v in MONTH_ABBREVIATIONS.items()}  # Create reverse mapping
+    
+    for folder in folders:
+        # Check direct substring match first
+        if search_lower in folder.lower():
+            filtered.append(folder)
+            continue
+        
+        # Try to split into month/year components
+        parts = folder.split('_')
+        if len(parts) == 2:
+            month_part, year_part = parts
+            # Check month matches (either abbreviation or full name)
+            full_month = FULL_MONTH_NAMES.get(month_part, month_part)
+            if (search_lower == month_part.lower() or 
+                search_lower == full_month.lower() or 
+                search_lower == year_part.lower()):
+                filtered.append(folder)
+    
+    return filtered
+
+# Modified Sidebar section
 st.sidebar.title("📁 Available Folders")
+
+# Add search bar
+search_term = st.sidebar.text_input("🔍 Search folders (year, month, or name):")
+
+# Get and filter folders
 folders = list_folders_in_s3(S3_BUCKET)
-if folders:
-    max_folders_to_show = 3
-    st.sidebar.markdown("### Folders in Bucket:")
-    for folder in folders[:max_folders_to_show]:
+filtered_folders = filter_folders(folders, search_term)
+
+# Display results
+if filtered_folders:
+    st.sidebar.markdown(f"**Found {len(filtered_folders)} matching folders:**")
+    for folder in filtered_folders:
         st.sidebar.write(f"- {folder}")
-    if len(folders) > max_folders_to_show:
-        st.sidebar.write("...and more!")
+elif folders:
+    st.sidebar.write("No folders match your search criteria.")
 else:
-    st.sidebar.write("No folders available.")
+    st.sidebar.write("No folders available in the bucket.")
+
+# ... [Keep the rest of the code unchanged] ...
 
 # Main Page: Batch Details and File Uploads
 st.title("📊 Upload Placement Data")
