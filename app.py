@@ -5,8 +5,8 @@ from io import BytesIO
 import pandas as pd
 
 # AWS S3 Configuration (Use environment variables for security)
-S3_BUCKET = "placement-trends-data2"
-S3_BUCKET_MARKER = "markers-for-batches2"
+S3_BUCKET = "placement-trends-data"
+S3_BUCKET_MARKER = "markers-for-batches"
 
 VALID_USERNAME = st.secrets["APP_USERNAME"]
 VALID_PASSWORD = st.secrets["APP_PASSWORD"]
