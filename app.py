@@ -112,9 +112,94 @@ def upload_marker_file(batch_name):
     except Exception as e:
         st.error(f"Error uploading marker file: {str(e)}")
 
-# ... [Keep all previous imports and configurations unchanged] ...
+def forDACResult(file):
+    file_ext = file.name.rsplit(".", 1)[-1].lower()  # Changed from filename to name for UploadedFile
+    engine = "xlrd" if file_ext == "xls" else "openpyxl"
 
-# Add this function under the Helper Functions section
+    df = pd.read_excel(file, header=[0, 1], engine=engine)
+    df.columns = [
+        f"{str(col[0]).strip()}_{str(col[1]).strip()}" if isinstance(col, tuple) and col[0] and col[1]
+        else str(col[1]).strip() if isinstance(col, tuple) and col[1]
+        else str(col[0]).strip()
+        for col in df.columns
+    ]
+
+    column_mapping = {
+        "unnamed: 0_level_0_prn": "PRN",
+        "total_800": "Total800",
+        "total_600": "Total800",
+        "web-based java programming_total/600": "Total800",
+        "web-based java programming_total/800": "Total800",
+        "total_%": "CDAC_Percentage",
+        "web-based java programming_%": "CDAC_Percentage",
+        "total_grade": "Grade",
+        "web-based java programming_grade": "Grade",
+        "total_result": "Result",
+        "web-based java programming_result": "Result",
+        "total_apti & ec grade": "Apti_EC_Grade",
+        "web-based java programming_apti & ec grade": "Apti_EC_Grade",
+        "total_project grade": "Project_Grade",
+        "web-based java programming_project grade": "Project_Grade",
+    }
+    df.rename(columns=lambda x: column_mapping.get(x.lower(), x), inplace=True)
+
+    expected_columns = ["PRN", "Total800", "CDAC_Percentage", "Grade", "Result", "Apti_EC_Grade", "Project_Grade"]
+    for col in expected_columns:
+        if col not in df.columns:
+            df[col] = None
+
+    subject_total_columns = [col for col in df.columns if "Total" in col and col not in ["Total800"]]
+    df["Total800"] = df[subject_total_columns].apply(pd.to_numeric, errors='coerce').sum(axis=1)
+
+    return df[expected_columns]
+
+def forDBDAResult(file):
+    file_ext = file.name.rsplit(".", 1)[-1].lower()  # Changed from filename to name for UploadedFile
+    engine = "xlrd" if file_ext == "xls" else "openpyxl"
+
+    df = pd.read_excel(file, header=[0, 1], engine=engine)
+    df.columns = [
+        f"{str(col[0]).strip()}_{str(col[1]).strip()}" if isinstance(col, tuple) and col[0] and col[1]
+        else str(col[1]).strip() if isinstance(col, tuple) and col[1]
+        else str(col[0]).strip()
+        for col in df.columns
+    ]
+
+    column_mapping = {
+        "Unnamed: 0_level_0_PRN": "PRN",
+        "total_800": "Total800",
+        "total_600": "Total800",
+        "total_%": "CDAC_Percentage",
+        "total_grade": "Grade",
+        "total_result": "Result",
+        "total_apti & ec grade": "Apti_EC_Grade",
+        "total_project grade": "Project_Grade",
+        "Practical Machine learning_Total/600": "Total800",
+        "Practical Machine learning_%": "CDAC_Percentage",
+        "Practical Machine learning_Apti & EC Grade": "Apti_EC_Grade",
+        "Practical Machine Learning_Apti & EC Grade": "Apti_EC_Grade",
+        "Practical Machine learning_Result": "Result",
+        "Practical Machine Learning_Project Grade": "Project_Grade",
+        "Practical Machine Learning_Total/800": "Total800",
+        "Practical Machine Learning_Grade": "Grade",
+        "Practical Machine Learning_Result": "Result",
+        "Practical Machine Learning_%": "CDAC_Percentage",
+        "Practical Machine learning_Grade": "Grade",
+        "Practical Machine learning_Project Grade": "Project_Grade",
+    }
+    df.rename(columns=lambda x: column_mapping.get(x.strip(), x), inplace=True)
+
+    expected_columns = ["PRN", "Total800", "CDAC_Percentage", "Grade", "Result", "Apti_EC_Grade", "Project_Grade"]
+    for col in expected_columns:
+        if col not in df.columns:
+            df[col] = None
+    subject_total_columns = [col for col in df.columns if "Total" in col and col not in ["Total800"]]
+    df["Total800"] = df[subject_total_columns].apply(pd.to_numeric, errors='coerce').sum(axis=1)
+
+    return df[expected_columns]
+
+
+
 def filter_folders(folders, search_term):
     """Filter folders based on search term (supports month name, abbreviation, year, or partial matches)"""
     if not search_term:
@@ -257,9 +342,16 @@ if st.button("🚀 Upload"):
                         uploaded_files[f"{file_type}_DAC"] = dac_key
                         uploaded_files[f"{file_type}_DBDA"] = dbda_key
                     else:
-                        # Add _Result suffix for other files
+                        # Use specialized processing for DAC/DBDA Results
                         result_key = f"{batch_name}/{file_type}_Result.csv"
-                        df = process_excel(file)
+                        
+                        if file_type == "DAC":
+                            df = forDACResult(file)
+                        elif file_type == "DBDA":
+                            df = forDBDAResult(file)
+                        else:  # For Registration files
+                            df = process_excel(file)
+                        
                         buffer = BytesIO()
                         df.to_csv(buffer, index=False)
                         buffer.seek(0)
@@ -273,5 +365,4 @@ if st.button("🚀 Upload"):
 
         if uploaded_files:
             st.success("✅ All files uploaded successfully")
-            # st.json(uploaded_files)
             upload_marker_file(batch_name)
