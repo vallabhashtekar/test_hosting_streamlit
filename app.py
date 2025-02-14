@@ -5,8 +5,8 @@ from io import BytesIO
 import pandas as pd
 
 # AWS S3 Configuration (Use environment variables for security)
-S3_BUCKET = "placement-trends-data"
-S3_BUCKET_MARKER = "markers-for-batches"
+S3_BUCKET = "placement-trends-data2"
+S3_BUCKET_MARKER = "markers-for-batches2"
 
 VALID_USERNAME = st.secrets["APP_USERNAME"]
 VALID_PASSWORD = st.secrets["APP_PASSWORD"]
@@ -92,10 +92,21 @@ def upload_to_s3(bucket, key, data):
         raise ValueError(f"Error uploading to S3: {str(e)}")
 
 # Helper Function: Upload a single marker file to the marker bucket
+# Define this at the top level (with other configurations)
+MONTH_ABBREVIATIONS = {
+    "March": "Mar",
+    "September": "Sep"
+}
+
 def upload_marker_file(batch_name):
     try:
-        marker_content = f"Batch {batch_name} upload complete"
-        marker_key = f"{batch_name}.txt"
+        # Ensure the batch name is in the correct abbreviated format
+        month_part, year_part = batch_name.split('_')
+        abbreviated_month = MONTH_ABBREVIATIONS.get(month_part, month_part[:3])
+        formatted_batch_name = f"{abbreviated_month}_{year_part}"
+        
+        marker_content = f"Batch {formatted_batch_name} upload complete"
+        marker_key = f"{formatted_batch_name}.txt"
         s3_client.put_object(Bucket=S3_BUCKET_MARKER, Key=marker_key, Body=marker_content)
         st.success(f"✅ Marker file uploaded: {marker_key}")
     except Exception as e:
