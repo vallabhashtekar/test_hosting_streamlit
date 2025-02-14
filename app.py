@@ -173,7 +173,6 @@ if st.button("🚀 Upload"):
     if not batch_month or not batch_year:
         st.error("🚨 Batch month and year are required!")
     else:
-        # Convert full month name to abbreviation
         abbrev_month = MONTH_ABBREVIATIONS.get(batch_month, batch_month)
         batch_name = f"{abbrev_month}_{batch_year}"
         uploaded_files = {}
@@ -194,36 +193,45 @@ if st.button("🚀 Upload"):
             if file:
                 try:
                     if file_type in ["MasterData", "Placement"]:
+                        # Process sheets for MasterData and Placement
                         dac_sheet_name = masterdata_dac_sheet if file_type == "MasterData" else placement_dac_sheet
                         dbda_sheet_name = masterdata_dbda_sheet if file_type == "MasterData" else placement_dbda_sheet
 
                         dac_df = process_excel(file, dac_sheet_name)
                         dbda_df = process_excel(file, dbda_sheet_name)
 
+                        # Updated file names with suffix
+                        dac_key = f"{batch_name}/{file_type}_DAC.csv"
+                        dbda_key = f"{batch_name}/{file_type}_DBDA.csv"
+                        
                         dac_buffer = BytesIO()
                         dac_df.to_csv(dac_buffer, index=False)
                         dac_buffer.seek(0)
-                        upload_to_s3(S3_BUCKET, f"{batch_name}/{file_type}_DAC.csv", dac_buffer.getvalue())
+                        upload_to_s3(S3_BUCKET, dac_key, dac_buffer.getvalue())
 
                         dbda_buffer = BytesIO()
                         dbda_df.to_csv(dbda_buffer, index=False)
                         dbda_buffer.seek(0)
-                        upload_to_s3(S3_BUCKET, f"{batch_name}/{file_type}_DBDA.csv", dbda_buffer.getvalue())
+                        upload_to_s3(S3_BUCKET, dbda_key, dbda_buffer.getvalue())
+
+                        uploaded_files[f"{file_type}_DAC"] = dac_key
+                        uploaded_files[f"{file_type}_DBDA"] = dbda_key
                     else:
+                        # Add _Result suffix for other files
+                        result_key = f"{batch_name}/{file_type}_Result.csv"
                         df = process_excel(file)
                         buffer = BytesIO()
                         df.to_csv(buffer, index=False)
                         buffer.seek(0)
-                        upload_to_s3(S3_BUCKET, f"{batch_name}/{file_type}.csv", buffer.getvalue())
+                        upload_to_s3(S3_BUCKET, result_key, buffer.getvalue())
+                        uploaded_files[file_type] = result_key
 
-                    uploaded_files[file_type] = f"{batch_name}/{file_type}"
+                    current_progress += 1
+                    progress_bar.progress(current_progress / total_files)
                 except Exception as e:
                     st.error(f"❌ Failed to process {file_type}: {str(e)}")
 
-                current_progress += 1
-                progress_bar.progress(current_progress / total_files)
-
         if uploaded_files:
             st.success("✅ All files uploaded successfully")
-            st.json(uploaded_files)
+            # st.json(uploaded_files)
             upload_marker_file(batch_name)
