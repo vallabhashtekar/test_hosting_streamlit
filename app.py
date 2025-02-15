@@ -308,19 +308,18 @@ with col8:
     placement_dac_sheet = st.text_input("Placement DAC Sheet Name (Optional)")
 with col9:
     placement_dbda_sheet = st.text_input("Placement DBDA Sheet Name (Optional)")
+st.markdown(
+"""<div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
+        © Group 6 Aug 2024
+   </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # Upload Button
 if st.button("🚀 Upload"):
     if not batch_month or not batch_year:
         st.error("🚨 Batch month and year are required!")
-        st.markdown(
-    """
-    <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
-        © Group 6 Aug 2024
-    </div>
-    """,
-    unsafe_allow_html=True
-)
     else:
         abbrev_month = MONTH_ABBREVIATIONS.get(batch_month, batch_month)
         batch_name = f"{abbrev_month}_{batch_year}"
