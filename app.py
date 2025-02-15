@@ -60,12 +60,11 @@ def login():
     
     # Add logo to login page (centered)
     st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("Sm_VITA.jpg", width=150)  # Adjust width as needed
+    st.image("logo@2x.png", width=150)  # Adjust width as needed
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Login form
     st.markdown('<div class="login-title">🔒Login</div>', unsafe_allow_html=True)
-    st.markdown('<div class="login-title">logo@2x.png</div>', unsafe_allow_html=True)
 
     users = {
         VALID_USERNAME : VALID_PASSWORD
