@@ -23,11 +23,6 @@ s3_client = boto3.client(
 st.markdown("""
     <style>
         
-        .logo-container {
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        
         .logo-img {
             max-width: 300px;
             margin: 0 auto;
