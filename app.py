@@ -291,15 +291,6 @@ with col4:
 
 registration_file = st.file_uploader("Upload Registration File", type=["csv", "xls", "xlsx"])
 
-st.markdown(
-    """
-    <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
-        © Group 6 Aug 2024
-    </div>
-    """,
-    unsafe_allow_html=True
-)
-
 # MasterData Section
 st.markdown("### 🗂️ MasterData File")
 masterdata_file = st.file_uploader("Upload MasterData File", type=["csv", "xls", "xlsx"])
@@ -384,6 +375,15 @@ if st.button("🚀 Upload"):
                     progress_bar.progress(current_progress / total_files)
                 except Exception as e:
                     st.error(f"❌ Failed to process {file_type}: {str(e)}")
+
+        st.markdown(
+    """
+    <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
+        © Group 6 Aug 2024
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
         if uploaded_files:
             st.success("✅ All files uploaded successfully")
