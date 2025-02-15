@@ -64,7 +64,8 @@ def login():
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Login form
-    st.markdown('<div class="login-title">🔒 Login</div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-title">🔒Login</div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-title"></div>', unsafe_allow_html=True)
 
     users = {
         VALID_USERNAME : VALID_PASSWORD
