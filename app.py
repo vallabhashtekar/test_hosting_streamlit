@@ -19,13 +19,13 @@ s3_client = boto3.client(
     region_name=st.secrets["AWS_REGION"]
 )
 
-# Custom CSS to style the login page and make it bigger
+# Custom CSS to style the login page
 st.markdown("""
     <style>
-        
         .logo-img {
-            max-width: 300px;
+            max-width: 150px;  /* Smaller logo */
             margin: 0 auto;
+            display: block;
         }
         
         .login-container {
@@ -35,6 +35,13 @@ st.markdown("""
             background: #2e2e2e;
             border-radius: 10px;
         }
+        
+        .login-title {
+            text-align: center;
+            font-size: 2rem;
+            color: #f1f1f1;
+            margin-bottom: 1.5rem;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -43,10 +50,7 @@ def login():
     st.markdown('<div class="login-container">', unsafe_allow_html=True)
     
     # Add logo to login page
-    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("Sm_VITA.jpg", use_column_width=True, output_format="PNG")
-    st.markdown('</div>', unsafe_allow_html=True)
-
+    st.image("Sm_VITA.jpg", width=150)  # Smaller logo with fixed width
     st.markdown('<div class="login-title">🔒 Login</div>', unsafe_allow_html=True)
 
     users = {
@@ -71,9 +75,7 @@ if not st.session_state["authenticated"]:
     st.stop()
 
 # Main Page Logo
-st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-st.image("SM_VITA_LOGO.png", use_column_width=True, output_format="PNG")
-st.markdown('</div>', unsafe_allow_html=True)
+st.image("Sm_VITA.jpg", width=150)  # Smaller logo with fixed width
 
 # Helper Function: List Folders in S3
 @st.cache_data
