@@ -313,6 +313,14 @@ with col9:
 if st.button("🚀 Upload"):
     if not batch_month or not batch_year:
         st.error("🚨 Batch month and year are required!")
+        st.markdown(
+    """
+    <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
+        © Group 6 Aug 2024
+    </div>
+    """,
+    unsafe_allow_html=True
+)
     else:
         abbrev_month = MONTH_ABBREVIATIONS.get(batch_month, batch_month)
         batch_name = f"{abbrev_month}_{batch_year}"
@@ -376,14 +384,7 @@ if st.button("🚀 Upload"):
                 except Exception as e:
                     st.error(f"❌ Failed to process {file_type}: {str(e)}")
 
-        st.markdown(
-    """
-    <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
-        © Group 6 Aug 2024
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+        
 
         if uploaded_files:
             st.success("✅ All files uploaded successfully")
