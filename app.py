@@ -20,27 +20,36 @@ s3_client = boto3.client(
 )
 
 # Custom CSS to style the login page
+# Custom CSS to style the login page
 st.markdown("""
     <style>
-        .logo-img {
-            max-width: 150px;  /* Smaller logo */
+        /* Center the logo and remove unwanted styling */
+        .logo-container {
+            text-align: center;
             margin: 0 auto;
-            display: block;
+            padding: 0;
         }
         
+        /* Remove the black box and adjust the login container */
         .login-container {
             max-width: 500px;
-            margin: 2rem auto;
+            margin: 0 auto;
             padding: 2rem;
-            background: #2e2e2e;
+            background: transparent;  /* Remove black background */
             border-radius: 10px;
         }
         
+        /* Style the login title */
         .login-title {
             text-align: center;
             font-size: 2rem;
             color: #f1f1f1;
             margin-bottom: 1.5rem;
+        }
+        
+        /* Ensure the body has a consistent background */
+        body {
+            background-color: #1e1e1e;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -49,8 +58,12 @@ st.markdown("""
 def login():
     st.markdown('<div class="login-container">', unsafe_allow_html=True)
     
-    # Add logo to login page
-    st.image("Sm_VITA.jpg", width=150)  # Smaller logo with fixed width
+    # Add logo to login page (centered)
+    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+    st.image("Sm_VITA.jpg", width=150)  # Adjust width as needed
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Login form
     st.markdown('<div class="login-title">🔒 Login</div>', unsafe_allow_html=True)
 
     users = {
