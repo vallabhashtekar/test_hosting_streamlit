@@ -17,8 +17,8 @@ s3_client = boto3.client(
     aws_secret_access_key=st.secrets["AWS_SECRET_ACCESS_KEY"],
     aws_session_token=st.secrets.get("AWS_SESSION_TOKEN", None),
     region_name=st.secrets["AWS_REGION"]
-
 )
+
 # Custom CSS to style the login page and make it bigger
 st.markdown("""
     <style>
@@ -28,18 +28,40 @@ st.markdown("""
         
         .login-title {
             text-align: center;
-            font-size: 2.5rem; /* Larger title */
+            font-size: 2.5rem;
             color: #f1f1f1;
             margin-bottom: 2rem;
         }
-
         
+        .logo-container {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .logo-img {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .login-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: #2e2e2e;
+            border-radius: 10px;
+        }
     </style>
 """, unsafe_allow_html=True)
 
 # Login Functionality
 def login():
     st.markdown('<div class="login-container">', unsafe_allow_html=True)
+    
+    # Add logo to login page
+    st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+    st.image("SM_VITA_LOGO.png", use_column_width=True, output_format="PNG")
+    st.markdown('</div>', unsafe_allow_html=True)
+
     st.markdown('<div class="login-title">🔒 Login</div>', unsafe_allow_html=True)
 
     users = {
@@ -62,6 +84,11 @@ if "authenticated" not in st.session_state:
 if not st.session_state["authenticated"]:
     login()
     st.stop()
+
+# Main Page Logo
+st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+st.image("SM_VITA_LOGO.png", use_column_width=True, output_format="PNG")
+st.markdown('</div>', unsafe_allow_html=True)
 
 # Helper Function: List Folders in S3
 @st.cache_data
@@ -92,7 +119,6 @@ def upload_to_s3(bucket, key, data):
         raise ValueError(f"Error uploading to S3: {str(e)}")
 
 # Helper Function: Upload a single marker file to the marker bucket
-# Define this at the top level (with other configurations)
 MONTH_ABBREVIATIONS = {
     "March": "Mar",
     "September": "Sep"
@@ -100,7 +126,6 @@ MONTH_ABBREVIATIONS = {
 
 def upload_marker_file(batch_name):
     try:
-        # Ensure the batch name is in the correct abbreviated format
         month_part, year_part = batch_name.split('_')
         abbreviated_month = MONTH_ABBREVIATIONS.get(month_part, month_part[:3])
         formatted_batch_name = f"{abbreviated_month}_{year_part}"
@@ -113,7 +138,7 @@ def upload_marker_file(batch_name):
         st.error(f"Error uploading marker file: {str(e)}")
 
 def forDACResult(file):
-    file_ext = file.name.rsplit(".", 1)[-1].lower()  # Changed from filename to name for UploadedFile
+    file_ext = file.name.rsplit(".", 1)[-1].lower()
     engine = "xlrd" if file_ext == "xls" else "openpyxl"
 
     df = pd.read_excel(file, header=[0, 1], engine=engine)
@@ -154,7 +179,7 @@ def forDACResult(file):
     return df[expected_columns]
 
 def forDBDAResult(file):
-    file_ext = file.name.rsplit(".", 1)[-1].lower()  # Changed from filename to name for UploadedFile
+    file_ext = file.name.rsplit(".", 1)[-1].lower()
     engine = "xlrd" if file_ext == "xls" else "openpyxl"
 
     df = pd.read_excel(file, header=[0, 1], engine=engine)
@@ -198,28 +223,22 @@ def forDBDAResult(file):
 
     return df[expected_columns]
 
-
-
 def filter_folders(folders, search_term):
-    """Filter folders based on search term (supports month name, abbreviation, year, or partial matches)"""
     if not search_term:
         return folders
     
     search_lower = search_term.strip().lower()
     filtered = []
-    FULL_MONTH_NAMES = {v: k for k, v in MONTH_ABBREVIATIONS.items()}  # Create reverse mapping
+    FULL_MONTH_NAMES = {v: k for k, v in MONTH_ABBREVIATIONS.items()}
     
     for folder in folders:
-        # Check direct substring match first
         if search_lower in folder.lower():
             filtered.append(folder)
             continue
         
-        # Try to split into month/year components
         parts = folder.split('_')
         if len(parts) == 2:
             month_part, year_part = parts
-            # Check month matches (either abbreviation or full name)
             full_month = FULL_MONTH_NAMES.get(month_part, month_part)
             if (search_lower == month_part.lower() or 
                 search_lower == full_month.lower() or 
@@ -230,15 +249,10 @@ def filter_folders(folders, search_term):
 
 # Modified Sidebar section
 st.sidebar.title("📁 Available Folders")
-
-# Add search bar
 search_term = st.sidebar.text_input("🔍 Search folders (year, month, or name):")
-
-# Get and filter folders
 folders = list_folders_in_s3(S3_BUCKET)
 filtered_folders = filter_folders(folders, search_term)
 
-# Display results
 if filtered_folders:
     st.sidebar.markdown(f"**Found {len(filtered_folders)} matching folders:**")
     for folder in filtered_folders:
@@ -248,9 +262,7 @@ elif folders:
 else:
     st.sidebar.write("No folders available in the bucket.")
 
-# ... [Keep the rest of the code unchanged] ...
-
-# Main Page: Batch Details and File Uploads
+# Main Page Content
 st.title("📊 Upload Placement Data")
 
 # Batch Details Section
@@ -289,10 +301,6 @@ with col8:
 with col9:
     placement_dbda_sheet = st.text_input("Placement DBDA Sheet Name (Optional)")
 
-MONTH_ABBREVIATIONS = {
-    "March": "Mar",
-    "September": "Sep"
-}
 # Upload Button
 if st.button("🚀 Upload"):
     if not batch_month or not batch_year:
@@ -318,14 +326,12 @@ if st.button("🚀 Upload"):
             if file:
                 try:
                     if file_type in ["MasterData", "Placement"]:
-                        # Process sheets for MasterData and Placement
                         dac_sheet_name = masterdata_dac_sheet if file_type == "MasterData" else placement_dac_sheet
                         dbda_sheet_name = masterdata_dbda_sheet if file_type == "MasterData" else placement_dbda_sheet
 
                         dac_df = process_excel(file, dac_sheet_name)
                         dbda_df = process_excel(file, dbda_sheet_name)
 
-                        # Updated file names with suffix
                         dac_key = f"{batch_name}/{file_type}_DAC.csv"
                         dbda_key = f"{batch_name}/{file_type}_DBDA.csv"
                         
@@ -342,14 +348,13 @@ if st.button("🚀 Upload"):
                         uploaded_files[f"{file_type}_DAC"] = dac_key
                         uploaded_files[f"{file_type}_DBDA"] = dbda_key
                     else:
-                        # Use specialized processing for DAC/DBDA Results
                         result_key = f"{batch_name}/{file_type}_Result.csv"
                         
                         if file_type == "DAC":
                             df = forDACResult(file)
                         elif file_type == "DBDA":
                             df = forDBDAResult(file)
-                        else:  # For Registration files
+                        else:
                             df = process_excel(file)
                         
                         buffer = BytesIO()
