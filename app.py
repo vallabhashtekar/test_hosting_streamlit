@@ -313,13 +313,6 @@ with col9:
 if st.button("🚀 Upload"):
     if not batch_month or not batch_year:
         st.error("🚨 Batch month and year are required!")
-   st.markdown(
-"""<div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
-        © Group 6 Aug 2024
-   </div>
-    """,
-    unsafe_allow_html=True
-   )
 
     else:
         abbrev_month = MONTH_ABBREVIATIONS.get(batch_month, batch_month)
