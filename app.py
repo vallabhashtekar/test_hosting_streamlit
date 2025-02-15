@@ -382,3 +382,12 @@ if st.button("🚀 Upload"):
         if uploaded_files:
             st.success("✅ All files uploaded successfully")
             upload_marker_file(batch_name)
+
+st.markdown(
+    """
+    <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
+        © Group 6 Aug 2024
+    </div>
+    """,
+    unsafe_allow_html=True
+)
