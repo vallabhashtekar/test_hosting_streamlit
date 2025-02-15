@@ -88,7 +88,7 @@ if not st.session_state["authenticated"]:
     st.stop()
 
 # Main Page Logo
-st.image("Sm_VITA.jpg", width=150)  # Smaller logo with fixed width
+st.image("logo@2x.png", width=150)  # Smaller logo with fixed width
 
 # Helper Function: List Folders in S3
 @st.cache_data
