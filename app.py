@@ -59,7 +59,7 @@ def login():
     
     # Add logo to login page
     st.markdown('<div class="logo-container">', unsafe_allow_html=True)
-    st.image("SM_VITA_LOGO.png", use_column_width=True, output_format="PNG")
+    st.image("SM_VITA_LOGO.pdf", use_column_width=True, output_format="PNG")
     st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown('<div class="login-title">🔒 Login</div>', unsafe_allow_html=True)
