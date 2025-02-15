@@ -22,9 +22,7 @@ s3_client = boto3.client(
 # Custom CSS to style the login page and make it bigger
 st.markdown("""
     <style>
-        body {
-            background-color: #1e1e1e;
-        }
+    
         
         .login-title {
             text-align: center;
