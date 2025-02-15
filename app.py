@@ -79,6 +79,14 @@ def login():
             st.error("Invalid username or password")
 
     st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown(
+        """
+        <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
+            © Group 6 Aug 2024
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
 if "authenticated" not in st.session_state:
     st.session_state["authenticated"] = False
@@ -282,6 +290,15 @@ with col4:
     dbda_file = st.file_uploader("Upload DBDA File", type=["csv", "xls", "xlsx"])
 
 registration_file = st.file_uploader("Upload Registration File", type=["csv", "xls", "xlsx"])
+
+st.markdown(
+    """
+    <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
+        © Group 6 Aug 2024
+    </div>
+    """,
+    unsafe_allow_html=True
+)
 
 # MasterData Section
 st.markdown("### 🗂️ MasterData File")
