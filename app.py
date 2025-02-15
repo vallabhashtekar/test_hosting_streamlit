@@ -82,7 +82,7 @@ def login():
     st.markdown(
         """
         <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
-            © Group 6 Aug 2024
+            © Group 6 Sept 2024
         </div>
         """,
         unsafe_allow_html=True
@@ -386,7 +386,7 @@ if st.button("🚀 Upload"):
 st.markdown(
     """
     <div style="text-align: center; margin-top: 2rem; color: #888; font-size: 0.9rem;">
-        © Group 6 Aug 2024
+        © Group 6 Sept 2024
     </div>
     """,
     unsafe_allow_html=True
