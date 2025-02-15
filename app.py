@@ -129,7 +129,7 @@ def upload_to_s3(bucket, key, data):
 # Helper Function: Upload a single marker file to the marker bucket
 MONTH_ABBREVIATIONS = {
     "March": "Mar",
-    "September": "Sep"
+    "September": "Sept"
 }
 
 def upload_marker_file(batch_name):
